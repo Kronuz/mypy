@@ -194,6 +194,9 @@ class Options:
         # If True, partial types can't span a module top level and a function
         self.local_partial_types = False
 
+        # Extra sys.path() used
+        self.sys_path = []
+
     def snapshot(self) -> object:
         """Produce a comparable snapshot of this Option"""
         d = dict(self.__dict__)

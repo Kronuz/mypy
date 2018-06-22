@@ -532,6 +532,9 @@ def process_options(args: List[str],
     code_group.add_argument('-F', '--filename', action='store', metavar='FILENAME',
                             dest='special-opts:filename',
                             help="filename for type-check program")
+    code_group.add_argument('-P', '--sys-path', action='append', metavar='SYS_PATH',
+                            dest='special-opts:sys_path',
+                            help="extra sys.path() to add")
     code_group.add_argument(metavar='files', nargs='*', dest='special-opts:files',
                             help="type-check given files or directories")
 
@@ -564,6 +567,11 @@ def process_options(args: List[str],
                      "you should really investigate how to obtain stubs for that module.\n"
                      "See https://github.com/python/mypy/issues/1411 for more discussion."
                      )
+
+    sys_path = []
+    for sp in special_opts.sys_path:
+        sys_path.extend(sp.split(os.pathsep))
+    options.sys_path = sys_path
 
     # Process deprecated options
     if special_opts.disallow_any:

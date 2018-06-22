@@ -232,6 +232,8 @@ def compute_lib_path(sources: List[BuildSource],
         # https://github.com/python/mypy/issues/4195#issuecomment-341915031
         lib_path.appendleft(os.getcwd())
 
+    lib_path.extendleft(options.sys_path)
+
     # Prepend a config-defined mypy path.
     lib_path.extendleft(options.mypy_path)
 
