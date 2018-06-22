@@ -16,7 +16,7 @@ from mypy import defaults
 from mypy import experiments
 from mypy import util
 from mypy.build import BuildSource, BuildResult, PYTHON_EXTENSIONS
-from mypy.find_sources import create_source_list, InvalidSourceList
+from mypy.find_sources import create_source_list, InvalidSourceList, SourceFinder
 from mypy.fscache import FileSystemCache
 from mypy.errors import CompileError
 from mypy.options import Options, BuildType
@@ -529,6 +529,9 @@ def process_options(args: List[str],
     code_group.add_argument('-c', '--command', action='append', metavar='PROGRAM_TEXT',
                             dest='special-opts:command',
                             help="type-check program passed in as string")
+    code_group.add_argument('-F', '--filename', action='store', metavar='FILENAME',
+                            dest='special-opts:filename',
+                            help="filename for type-check program")
     code_group.add_argument(metavar='files', nargs='*', dest='special-opts:files',
                             help="type-check given files or directories")
 
@@ -656,7 +659,12 @@ def process_options(args: List[str],
         return targets, options
     elif special_opts.command:
         options.build_type = BuildType.PROGRAM_TEXT
-        targets = [BuildSource(None, None, '\n'.join(special_opts.command))]
+        if special_opts.filename:
+            finder = SourceFinder(fscache)
+            name, base_dir = finder.crawl_up(os.path.normpath(special_opts.filename))
+        else:
+            name, base_dir = None, None
+        targets = [BuildSource(special_opts.filename, name, '\n'.join(special_opts.command), base_dir)]
         return targets, options
     else:
         try:
