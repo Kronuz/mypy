@@ -2301,9 +2301,9 @@ def module_not_found(manager: BuildManager, line: int, caller_state: State,
         errors.report(line, 0, stub_msg, severity='note', only_once=True)
     else:
         errors.report(line, 0, "Cannot find module named '{}'".format(target))
-        errors.report(line, 0, '(Perhaps setting MYPYPATH '
-                      'or using the "--ignore-missing-imports" flag would help)',
-                      severity='note', only_once=True)
+        # errors.report(line, 0, '(Perhaps setting MYPYPATH '
+        #               'or using the "--ignore-missing-imports" flag would help)',
+        #               severity='note', only_once=True)
     errors.set_import_context(save_import_context)
 
 
